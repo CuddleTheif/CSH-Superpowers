@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CSH Superpowers Login</title>
+    <script>
+      if(<%= failed %>)
+         alert('Login Failed!');
+    </script>
+  </head>
+  <body>
+    <form action="login" method="POST">
+      Username<br/>
+      <input type="text" name="uid" /><br/>
+      Password<br/>
+      <input type="password" name="password" /><br/>
+      <input type="submit" value="Login" />
+    </form>
+  </body>
+</html>
