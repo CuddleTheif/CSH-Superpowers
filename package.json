@@ -3,6 +3,7 @@
   "Description": "A server for CSHers to have superpowers",
   "main": "server.js",
   "dependencies": {
+    "body-parser": "^1.15.0",
     "ejs": "^2.4.1",
     "express": "^4.13.4"
   }
