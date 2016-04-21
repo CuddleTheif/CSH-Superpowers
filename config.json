@@ -1,0 +1,6 @@
+{
+  "mainPort": 80,
+  "buildPort": 81,
+  "password": "",
+  "maxRecentBuilds": 10
+}
