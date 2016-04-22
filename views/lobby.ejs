@@ -2,43 +2,16 @@
 <html>
   <head>
     <title>CSH Superpowers</title>
-    <script>
-      function start(){
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function() {
-          if (request.readyState == 4 && request.status == 200) {
-            if(request.responseText==="false")
-              alert("Superpowers are already running or you don't have superpowers?");
-            else
-              alert('Your superpowers have started at '+document.origin+'/superpower/<%= uid %>/');
-          }
-        };
-        request.open("POST", "start", true);
-        request.send();
-      }
-
-      function stop(){
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function() {
-          if (request.readyState == 4 && request.status == 200) {
-            if(request.responseText==="false")
-              alert("Your superpowers aren't running or something's wrong!");
-            else
-              alert("Superpowers stopped!");
-          }
-        };
-        request.open("POST", "stop", true);
-        request.send();
-      }
-    </script>
+    <script>var uid = '<%= uid %>';</script>
+    <script src="/js/lobby.js"></script>
   </head>
   <body>
     <button onclick="start();">Start Superpowers</button>
     <button onclick="stop();">Stop Superpowers</button>
-    <button>Superpower Settings</button>
-    <button>Invite to Superpowers</button>
-    <button>Open Superpowers</button>
-    <button>Manage Projects</button>
+    <button onclick="settings();">Superpower Settings</button>
+    <button onclick="invite();">Invite to Superpowers</button>
+    <button onclick="open();">Open Superpowers</button>
+    <button onclick="projects();">Manage Projects</button>
     <form action="logout">
       <input type="submit" value="Logout" />
     </form>

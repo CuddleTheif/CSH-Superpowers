@@ -7,7 +7,8 @@ var server = require('http').createServer(),
                cp = require('child_process'),
                bodyParser = require('body-parser'),
                fs = require('fs'),
-               ldap = require('ldapjs');
+               ldap = require('ldapjs'),
+               Zip = require('easy-zip').EasyZip;
 var app = express();
 var superpowers = {};
 var portsUsed = [];
@@ -31,7 +32,7 @@ app.get('/', function(req, res) {
         fs.mkdir('./powers/'+req.session.uid+'/', function(err){
           if(err) throw err;
           var config = {password: "temp", maxRecentBuilds: 10};
-          fs.writeFile('config.json', JSON.stringify(config), function(err) {
+          fs.writeFile('./powers/'+req.session.uid+'/config.json', JSON.stringify(config), function(err) {
             if(err) throw err;
           });
         });
@@ -94,8 +95,8 @@ app.post('/start', function(req, res) {
 
   if(!superpowers[uid]){
 
-    // Set current server to loading
-    superpowers[uid] = {loading:true};
+    // Set current server to empty
+    superpowers[uid] = {};
 
     // First get a free port
     setImmediate(function(){
@@ -114,8 +115,7 @@ app.post('/start', function(req, res) {
 
             // Now run the server and set loading to false
             var powerDir = '../powers/'+uid+'/';
-            superpowers[uid].process = cp.exec('sudo node server start --data-path='+powerDir+' > '+powerDir+'server.log', {cwd: './app/'});
-            superpowers[uid].loading = false;
+            cp.exec('sudo node server start --data-path='+powerDir+' > '+powerDir+'server.log', {cwd: './app/'});
 
          });
 	});
@@ -146,6 +146,57 @@ app.post('/stop', function(req, res) {
   }
   else
     res.send(false);
+
+});
+
+// Allow the user to mess with their files
+app.get('/projects', function(req, res) {
+  var uid = req.session.uid;
+
+  if(!uid){
+    res.redirect('/');
+    return;
+  }
+
+  var dir = './powers/'+uid+'/projects/';
+  fs.readdir(dir, function(err, files) {
+    if(err) throw err;
+    var names = [];
+    for(var i=0, counter=0;i<files.length;i++){
+      var getCurName = (function(i) { return function(name){
+        names[i] = name;
+        if(++counter>=files.length)
+          res.render('projects', {projects: files, names: names});
+      };})(i);
+      getProjectName(dir+files[i], getCurName);
+    }
+  });
+  
+});
+
+// Gets the project name of the given project
+function getProjectName(dir, callback){
+  fs.readFile(dir+'/manifest.json', function(err, data){
+    if(err) throw err;
+    var mainfest = JSON.parse(data);
+    callback(mainfest.name);
+  });
+}
+
+// Handle downloading projects
+app.get(/\/projects\/download\/[^\/]+?\/?$/, function(req, res) {
+  
+  if(!req.session.uid){
+    res.redirect('/');
+    return;
+  }
+  var filename = req.url.match(/^.*\/(.+?)\/?$/)[1];
+  res.setHeader('Content-disposition', 'attachment; filename=' + filename+'.zip');
+  var zip = new Zip();
+  zip.zipFolder('./powers/'+req.session.uid+'/projects/'+filename, function(){
+    var data = zip.generate({base64:false,compression:'DEFLATE'});
+    res.end(data, 'binary');
+  }, {rootFolder: filename});
 
 });
 

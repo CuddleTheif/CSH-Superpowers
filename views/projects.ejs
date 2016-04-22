@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CSH Superpowers Projects</title>
+  </head>
+  <body>
+    <h1>Your projects</h1>
+    <ul>
+      <% for(var i=0;i<projects.length;i++) { %>
+      <li><%= names[i] %> <a href="./projects/download/<%= projects[i] %>">Download</a> <a href="./projects/git/<%= projects[i] %>">Git Console</a></li>
+      <% } %>
+    </ul>
+  </body>
+</html>
