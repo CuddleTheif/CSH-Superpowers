@@ -7,8 +7,18 @@
     <h1>Your projects</h1>
     <ul>
       <% for(var i=0;i<projects.length;i++) { %>
-      <li><%= names[i] %> <a href="./projects/download/<%= projects[i] %>">Download</a> <a href="./projects/git/<%= projects[i] %>">Git Console</a></li>
+        <li><%= names[i] %> 
+          <a href="./projects/download/<%= projects[i] %>">Download</a> 
+          <a href="./projects/git/<%= projects[i] %>">Git Console</a> 
+          <a href="./projects/delete/<%= projects[i] %>" onclick="return confirm('Are you sure you want to delete this project? THIS CAN\'T BE UNDONE!');">Delete</a>
+        </li>
       <% } %>
     </ul>
+    <form id="import-form" enctype="myltipart/form-data" />
+      <input type="file" id="project-file" name="project" />
+    </form>
+    <button onclick="upload();">Import Project</button>
+    <progress id="progress" value="0" min="0" max="1000"></div>
+    <script src="js/projects.js"></script>
   </body>
 </html>

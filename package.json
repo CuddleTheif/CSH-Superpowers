@@ -8,7 +8,11 @@
     "ejs": "^2.4.1",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
+    "jszip": "^3.0.0",
     "ldapjs": "^1.0.0",
-    "node-zip": "^1.1.1"
+    "multer": "^1.1.0",
+    "node-zip": "^1.1.1",
+    "rimraf": "^2.5.2",
+    "unzip": "^0.1.11"
   }
 }

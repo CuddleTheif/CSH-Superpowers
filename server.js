@@ -4,11 +4,14 @@ var server = require('http').createServer(),
                app = express(),
                port = 80,
                startPort = 8000,
+               upload = require('multer')({ dest: './temp/' }),
                cp = require('child_process'),
                bodyParser = require('body-parser'),
                fs = require('fs'),
                ldap = require('ldapjs'),
-               Zip = require('easy-zip').EasyZip;
+               Zip = require('easy-zip').EasyZip,
+               unzip = require('unzip'),
+               rimraf = require('rimraf');
 var app = express();
 var superpowers = {};
 var portsUsed = [];
@@ -164,14 +167,19 @@ app.get('/projects', function(req, res) {
   var dir = './powers/'+uid+'/projects/';
   fs.readdir(dir, function(err, files) {
     if(err) throw err;
-    var names = [];
-    for(var i=0, counter=0;i<files.length;i++){
-      var getCurName = (function(i) { return function(name){
-        names[i] = name;
-        if(++counter>=files.length)
-          res.render('projects', {projects: files, names: names});
-      };})(i);
-      getProjectName(dir+files[i], getCurName);
+    
+    if(files.length==0)
+      res.render('projects', {projects: [], names: []});
+    else{
+      var names = [];
+      for(var i=0, counter=0;i<files.length;i++){
+        var getCurName = (function(i) { return function(name){
+          names[i] = name;
+          if(++counter>=files.length)
+            res.render('projects', {projects: files, names: names});
+        };})(i);
+        getProjectName(dir+files[i], getCurName);
+      }
     }
   });
   
@@ -206,11 +214,28 @@ app.post('/settings', function(req, res) {
   res.redirect('/');
 });
 
-// Handle downloading projects
-app.get(/\/projects\/download\/[^\/]+?\/?$/, function(req, res) {
+// Handle deleting projects
+app.get(/\/projects\/delete\/[^\/]+?\/?$/, function(req, res){
   
   if(!req.session.uid){
     res.redirect('/');
+    return;
+  }
+  var project = req.url.match(/^.*\/(.+?)\/?$/)[1];
+  console.log(project);
+  rimraf('./powers/'+req.session.uid+'/projects/'+project, function(err){ 
+    if(err) throw err;
+    res.redirect('/projects');
+  });
+  
+});
+
+// Handle downloading projects
+app.get(/\/projects\/download\/[^\/]+?\/?$/, function(req, res) {
+  
+ 
+  if(!req.session.uid){
+    res.send(false);
     return;
   }
   var filename = req.url.match(/^.*\/(.+?)\/?$/)[1];
@@ -219,8 +244,21 @@ app.get(/\/projects\/download\/[^\/]+?\/?$/, function(req, res) {
   zip.zipFolder('./powers/'+req.session.uid+'/projects/'+filename, function(){
     var data = zip.generate({base64:false,compression:'DEFLATE'});
     res.end(data, 'binary');
-  }, {rootFolder: filename});
+  });
+});
 
+// Handle importing projects
+app.post('/import', upload.single('project'), function(req, res) {
+  if(!req.session.uid || !req.file || !req.file.originalname.endsWith('.zip')){
+    if(req.file)
+      fs.unlink(req.file.path, function(err) { if(err) throw err; });
+    res.send('ISSUE LOADING FILE! IT MUST BE A ZIP FILE!');
+    return;
+  }
+
+  fs.createReadStream(req.file.path).pipe(unzip.Extract({ path: './powers/'+req.session.uid+'/projects'})).on('close', function (){
+    res.send();
+  });
 });
 
 // Redirect urls for user's superpowers

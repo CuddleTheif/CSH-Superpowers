@@ -4,3 +4,4 @@ powers/**/
 pid
 startServer.sh
 server.log
+temp
