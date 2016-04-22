@@ -3,17 +3,17 @@
   <head>
     <title>CSH Superpowers</title>
     <script>var uid = '<%= uid %>';</script>
-    <script src="/js/lobby.js"></script>
   </head>
   <body>
-    <button onclick="start();">Start Superpowers</button>
-    <button onclick="stop();">Stop Superpowers</button>
-    <button onclick="settings();">Superpower Settings</button>
-    <button onclick="invite();">Invite to Superpowers</button>
-    <button onclick="open();">Open Superpowers</button>
-    <button onclick="projects();">Manage Projects</button>
+    <button id="start-button">Start Superpowers</button>
+    <button id="stop-button">Stop Superpowers</button>
+    <button id="settings-button">Superpower Settings</button>
+    <button id="invite-button">Invite to Superpowers</button>
+    <button id="open-button">Open Superpowers</button>
+    <button id="projects-button">Manage Projects</button>
     <form action="logout">
       <input type="submit" value="Logout" />
     </form>
+    <script src="/js/lobby.js"></script>
   </body>
 </html>

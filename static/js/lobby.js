@@ -1,4 +1,4 @@
-function start(){
+document.getElementById("start-button").onclick = function(){
   var request = new XMLHttpRequest();
   var self = this;
   request.onreadystatechange = function() {
@@ -13,7 +13,7 @@ function start(){
   request.send();
 }
 
-function stop(){
+document.getElementById("stop-button").onclick = function(){
   var request = new XMLHttpRequest();
   var self = this;
   request.onreadystatechange = function() {
@@ -28,18 +28,18 @@ function stop(){
   request.send();
 }
 
-function settings(){
+document.getElementById("settings-button").onclick = function(){
   document.location = '/settings';
 }
 
-function invite(){
+document.getElementById("invite-button").onclick = function(){
   
 }
 
-function open(){
+document.getElementById("open-button").onclick = function(){
   document.location = '/superpower/'+uid;
 }
 
-function projects(){
+document.getElementById("projects-button").onclick = function(){
   document.location = '/projects';
-} 
+}
