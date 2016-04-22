@@ -35,6 +35,9 @@ app.get('/', function(req, res) {
           fs.writeFile('./powers/'+req.session.uid+'/config.json', JSON.stringify(config), function(err) {
             if(err) throw err;
           });
+          fs.mkdir('./powers/'+req.session.uid+'/projects/', function(err){
+            if(err) throw err;
+          });
         });
       }
     });
@@ -182,6 +185,26 @@ function getProjectName(dir, callback){
     callback(mainfest.name);
   });
 }
+
+// Gets the current settings and allows changing them
+app.get('/settings', function(req, res) {
+  fs.readFile('./powers/'+req.session.uid+'/config.json', function(err, data){
+    if(err) throw err;
+    res.render('settings', JSON.parse(data));
+  });
+});
+app.post('/settings', function(req, res) {
+  fs.readFile('./powers/'+req.session.uid+'/config.json', function(err, data){
+    if(err) throw err;
+    var config = JSON.parse(data);
+    config.password = req.body.password;
+    config.maxRecentBuilds = parseInt(req.body.maxRecentBuilds);
+    fs.writeFile('./powers/'+req.session.uid+'/config.json', JSON.stringify(config), function(err){
+      if(err) throw err;
+    });
+  });
+  res.redirect('/');
+});
 
 // Handle downloading projects
 app.get(/\/projects\/download\/[^\/]+?\/?$/, function(req, res) {

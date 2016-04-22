@@ -6,7 +6,7 @@ document.getElementById("start-button").onclick = function(){
       if(request.responseText==="false")
         alert("Superpowers are already running or you don't have superpowers?");
       else
-        alert('Your superpowers have started at '+document.origin+'/superpower/'+uid+'/');
+        alert('Your superpowers has started!');
     }
   };
   request.open("POST", "start", true);
@@ -33,7 +33,7 @@ document.getElementById("settings-button").onclick = function(){
 }
 
 document.getElementById("invite-button").onclick = function(){
-  
+   prompt("Send this link to your friends!", document.origin+'/superpower/'+uid+'/');
 }
 
 document.getElementById("open-button").onclick = function(){

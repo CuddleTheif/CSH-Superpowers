@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CSH Superpowers Settings</title>
+  </head>
+  <body>
+    <form action="settings" method="POST">
+      Password<br/>
+      <input type="text" name="password" value="<%= password %>" autofocus /><br/>
+      Max Recent Builds<br/>
+      <input type="number" min="1" name="maxRecentBuilds" value="<%= maxRecentBuilds %>" /><br/>
+      <input type="submit" value="Save" />
+    </form>
+    <button onclick="document.location = '/';">Back</button>
+  </body>
+</html>
